@@ -31,16 +31,20 @@ jobs:
       run: mvn -B test --file pom.xml
      
   test_name:
+
+    runs-on: ubuntu-latest      
+    
     name: Build ans push to Azure Container Registry
     needs:
       build
     steps:
-      - name: A name
-        uses: azure/docker-login@v1
-        with:
-          login-server: pcacr.azurecr.io
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-      - run: |
-           docker build ./tomcat_petclinici -t ivantou/petclinic
-           docker push ivantou/petclinic
+    - uses: actions/checkout@v2
+    - name: Docker login
+      uses: azure/docker-login@v1
+      with:
+        login-server: pcacr.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    - run: |
+         docker build ./tomcat_petclinic -t ivantou/petclinic
+         docker push ivantou/petclinic
