@@ -35,7 +35,7 @@ jobs:
     name: Build ans push to Azure Container Registry
     needs:
       build
-    step:
+    steps:
       - name: A name
         uses: azure/docker-login@v1
         with:
