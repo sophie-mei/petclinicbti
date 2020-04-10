@@ -46,5 +46,5 @@ jobs:
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
     - run: |
-         docker build ./tomcat_petclinic -t ivantou/petclinic
-         docker push ivantou/petclinic
+         docker build ./tomcat_petclinic -t pcacr.azurecr.io/it-sz-petclinic
+         docker push pcacr.azurecr.io/it-sz-petclinic
