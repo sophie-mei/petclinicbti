@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-
+    name: Testing phase
     runs-on: ubuntu-latest
 
     steps:
@@ -27,5 +27,21 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
+    
     - name: Build with Maven
       run: mvn -B test --file pom.xml
+
+  test_name:
+    - name: Build ans push to Azure Container Registry
+      needs:
+        build
+        
+      uses: azure/docker-login@v1
+      with:
+        login-server: pcacr.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    - run: |
+        docker build ./tomcat_petclinici -t ivantou/petclinic
+        docker push ivantou/petclinic
