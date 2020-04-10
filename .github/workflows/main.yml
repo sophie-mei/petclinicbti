@@ -36,7 +36,8 @@ jobs:
     needs:
       build
     step:
-      - uses: azure/docker-login@v1
+      - name:
+        uses: azure/docker-login@v1
         with:
           login-server: pcacr.azurecr.io
           username: ${{ secrets.REGISTRY_USERNAME }}
