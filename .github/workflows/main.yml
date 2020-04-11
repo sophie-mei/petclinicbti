@@ -1,5 +1,4 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+# This workflow will build a Java project with Maven, build a docker container and publish it to Azure Container Registry
 
 name: Java CI with Maven and Azure
 
@@ -30,19 +29,25 @@ jobs:
    
     # Test and package the source code with Maven    
     - name: Test with Maven
-      run: mvn -B test --file pom.xml
+      run: mvn -B test --file pom.xml -P MySQL
     - name: Package with Maven
       run: mvn -B package --file pom.xml -P MySQL -DskipTests=true
-    
-    # Connect to Azure Container registry (ACR) 
-    - name: Docker login
+
+    # Move the application to the Dockerfile directory
+    - name: Move the package to ./tomcat_petclinic/
+      run: |
+        mv ./target/petclinic.war ./tomcat_petclinic/petclinic2.war
+
+    # Connect to Azure Container Registry (ACR) 
+    - name: Docker login to Azure Container Registry
       uses: azure/docker-login@v1
       with:
         login-server: pcacr.azurecr.io
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
     
-    # Container build and push to a Azure Container registry (ACR)
+    # Container build and push to a Azure Container Registry (ACR)
     - run: |
-         docker build ./tomcat_petclinic -t pcacr.azurecr.io/it-sz-petclinic
-         docker push pcacr.azurecr.io/it-sz-petclinic
+        docker build ./tomcat_petclinic -t it-sz-petclinic
+        docker tag it-sz-petclinic it-sz-petclinic:latest
+        docker push pcacr.azurecr.io/it-sz-petclinic:latest
