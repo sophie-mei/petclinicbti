@@ -36,7 +36,7 @@ jobs:
     # Move the application to the Dockerfile directory
     - name: Move the package to ./tomcat_petclinic/
       run: |
-        mv ./target/petclinic.war ./tomcat_petclinic/petclinic2.war
+        mv ./target/petclinic.war ./tomcat_petclinic/petclinic.war
 
     # Connect to Azure Container Registry (ACR) 
     - name: Docker login to Azure Container Registry
@@ -48,6 +48,6 @@ jobs:
     
     # Container build and push to a Azure Container Registry (ACR)
     - run: |
-        docker build ./tomcat_petclinic -t it-sz-petclinic
-        docker tag it-sz-petclinic it-sz-petclinic:latest
+        docker build ./tomcat_petclinic -t pcacr.azurecr.io/it-sz-petclinic
+        docker tag pcacr.azurecr.io/it-sz-petclinic pcacr.azurecr.io/it-sz-petclinic:latest
         docker push pcacr.azurecr.io/it-sz-petclinic:latest
