@@ -29,7 +29,7 @@ jobs:
    
     # Test and package the source code with Maven    
     - name: Test with Maven
-      run: mvn -B test --file pom.xml -P MySQL
+      run: mvn -B test --file pom.xml
     - name: Package with Maven
       run: mvn -B package --file pom.xml -P MySQL -DskipTests=true
 
