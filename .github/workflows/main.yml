@@ -1,50 +1,48 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Java CI with Maven
+name: Java CI with Maven and Azure
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dev ]
   pull_request:
-    branches: [ master ]
+    branches: [ dev ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
+    
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-
-    - name: Cache Maven packages
+    
+    # Caching the Maven dependencies to speed up the workflow exection time
+    - name: Cache Maven dependencies
       uses: actions/cache@v1
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-    - name: Build with Maven
+   
+    # Test and package the source code with Maven    
+    - name: Test with Maven
       run: mvn -B test --file pom.xml
-     
-  test_name:
-
-    runs-on: ubuntu-latest      
+    - name: Package with Maven
+      run: mvn -B package --file pom.xml -P MySQL -DskipTests=true
     
-    name: Build ans push to Azure Container Registry
-    needs:
-      build
-    steps:
-    - uses: actions/checkout@v2
+    # Connect to Azure Container registry (ACR) 
     - name: Docker login
       uses: azure/docker-login@v1
       with:
         login-server: pcacr.azurecr.io
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
+    
+    # Container build and push to a Azure Container registry (ACR)
     - run: |
          docker build ./tomcat_petclinic -t pcacr.azurecr.io/it-sz-petclinic
          docker push pcacr.azurecr.io/it-sz-petclinic
