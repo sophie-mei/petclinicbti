@@ -18,6 +18,7 @@ spec:
       containers:
         #- image: ivantou/petclinic 
         - image: pcacr.azurecr.io/it-sz-petclinic
+          imagePullPolicy: Always
           name: petclinic
           ports:
             - containerPort: 8080
