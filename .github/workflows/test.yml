@@ -1,4 +1,5 @@
 # This workflow will create a namespace in a AKS cluster
+# test
 
 name: AKS cluster namespace creation
 
