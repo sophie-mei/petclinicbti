@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         #- image: ivantou/petclinic 
-        #- image: pcacr.azurecr.io/it-sz-petclinic
+        - image: pcacr.azurecr.io/it-sz-petclinic
           name: petclinic
           ports:
             - containerPort: 8080
