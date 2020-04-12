@@ -11,6 +11,13 @@ on:
   pull_request:
     branches: [ dev ]
 
+# Environment variables available to all jobs and steps in this workflow
+env:
+  REGISTRY_NAME: pcacr.azurecr.io
+  CLUSTER_NAME: myPCAKSCluster
+  CLUSTER_RESOURCE_GROUP: myPCResourceGroup
+  NAMESPACE: test
+
 jobs:
   build:
     runs-on: ubuntu-latest
