@@ -6,7 +6,7 @@ metadata:
     app: petclinic
   name: petclinic
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels: 
       app: petclinic
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         #- image: ivantou/petclinic 
-        - image: pcacr.azurecr.io/it-sz-petclinic
+        - image: pcacr.azurecr.io/it-sz-petclinic:dev
           imagePullPolicy: Always
           name: petclinic
           ports:

@@ -7,9 +7,9 @@ name: Java CI/CD with Maven and Azure
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ master ]
   pull_request:
-    branches: [ dev ]
+    branches: [ master ]
 
 # Environment variables available to all jobs and steps in this workflow
 env:

@@ -1,0 +1,57 @@
+# This workflow will:
+#  - build a Java project with Maven
+#  - build a docker image and publish it to Azure Container Registry
+#  - deploy the image to a AKS cluster
+
+name: Java CI/CD with Maven and Azure
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  REGISTRY_NAME: pcacr.azurecr.io
+  CLUSTER_NAME: myPCAKSCluster
+  CLUSTER_RESOURCE_GROUP: myPCResourceGroup
+  NAMESPACE: test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - uses: azure/aks-set-context@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        cluster-name: ${{ env.CLUSTER_NAME }}
+        resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+
+    # Create namespace if doesn't exist
+    - run: |
+        kubectl create namespace ${{ env.NAMESPACE }} --dry-run -o json | kubectl apply -f -
+
+    # Create imagepullsecret for Azure Container registry (ACR)
+    - uses: azure/k8s-create-secret@v1
+      with:
+        container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
+        container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+        secret-name: ${{ env.REGISTRY_NAME }}-registry-connection
+        namespace: ${{ env.NAMESPACE }}
+
+    # Deploy app to AKS
+    - uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+          manifests/petclinic-deployment.yaml
+          manifests/petclinic-service.yaml
+        images: |
+          ${{ env.REGISTRY_NAME }}.azurecr.io/it-sz-petclinic
+        imagepullsecrets: |
+          ${{ env.REGISTRY_NAME }}-registry-connection
+        namespace: ${{ env.NAMESPACE }}
+
