@@ -17,9 +17,14 @@ spec:
     spec:
       containers:
         #- image: ivantou/petclinic 
-        - image: pcacr.azurecr.io/it-sz-petclinic:dev
+        - image: pcacr.azurecr.io/it-sz-petclinic:latest
           #imagePullPolicy: Always
           name: petclinic
           ports:
             - containerPort: 8080
+          resources:
+            requests:
+              cpu: 250m
+            limits:
+              cpu: 800m
       restartPolicy: Always
