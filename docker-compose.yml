@@ -4,7 +4,7 @@ version: "3.4"
 
 services:
   petclinic:
-    image: ivan/petclinic
+    image: petclinic_image
     build: 
       context: ./tomcat_petclinic
       dockerfile: Dockerfile
@@ -12,7 +12,7 @@ services:
       - 8080:8080
     depends_on:
       - "db"
-    command: ["./wait-for-it.sh", "db:3306", "--timeout=30" ,"--", "catalina.sh", "run"]
+    command: ["./wait-for-it.sh", "db:3306", "--timeout=500" ,"--", "catalina.sh", "run"]
 
   db:
     image: mysql:5.7
